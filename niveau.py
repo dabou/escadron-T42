@@ -46,24 +46,19 @@ class Niveau:
         self.typeOfNiveau = 'space'
         self.difficulty = difficulty
         self.actions = {}
-               
    
     def load(self):
         pass
         
     def generate(self):
         pass
-        
-  
+    
         
 class NiveauGenerated(Niveau):
     def load(self):
-        #self.name = 'niveau 3 - planete ZARDOZ'
         self.setImage()
         self.setMusic()
-        
-        #self.actions = {}
-        
+                
     def setImage(self):
         i = randint(0, 20)
         if i == 0:
@@ -158,7 +153,6 @@ class NiveauGenerated(Niveau):
         elif i > 7 :
             self.typeOfNiveau = 'nuage'
     
-    
         time = 0
         
         index = 0;
@@ -186,10 +180,8 @@ class NiveauGenerated(Niveau):
                 
         whatmin = trunc(0 + time/4 * self.difficulty )      
         whatmax = trunc(200*log(10*self.difficulty) - 50)
-        #print 'whatmin =' + str(whatmin)
-        #print 'whatmax =' + str(whatmax)
         
-        for i in range(10):
+        for i in range(500):
                         
             index += 1
             
@@ -201,11 +193,9 @@ class NiveauGenerated(Niveau):
             act.position = Window.width + 50,randint(100,Window.height - 50)
             
             whatmin = trunc(0 + (time/2) * self.difficulty    )   
-            #whatmax = 1000 - (500+2*self.difficulty)/self.difficulty 
             whatmax = trunc(200*log(10*self.difficulty) - 50)
             
             whatDifficult = randint(whatmin, whatmax)
-            #print 'whatDifficult (' + str(whatmin) +','+ str(whatmax)+'):' + str(whatDifficult)
             
             if whatDifficult <= 400:
                 act.isDeco = False
@@ -238,17 +228,11 @@ class NiveauGenerated(Niveau):
                 act.object = 'SpaceShipT48'         
            
                 act.size = 64, 64
-                
-            
-            
-            
-            
+             
             self.actions[index] = act
             
-            
-            
             deco = randint(0, 10)
-            if deco == 0 :
+            if deco < 8 :
                 index += 1
                 
                 act.id = index
@@ -261,17 +245,12 @@ class NiveauGenerated(Niveau):
                 act.object = 'AsteroidDeco'       
                 size = randint(30, 70)
                 act.size = size, size
-                act.movement = randint(-50, -10),randint(-20, 20),randint(-180, 180)
+                act.movement = randint(-50, -10),randint(-10, 10),randint(-180, 180)
                 
                 self.actions[index] = act
             
             #time += randint(50, 100) /100
             time += randint(1, 20) /10
-            
-            
-            
-            
-            
             
         act = NiveauAction()
         act.id = index + 1
@@ -281,9 +260,7 @@ class NiveauGenerated(Niveau):
         act.position = Window.width + 50, Window.height /2 + 100
         act.isDeco = False
         act.object = 'ItemTux'         
-        act.size = 64, 64   
-        
-            
+        act.size = 64, 64      
  
         #act = NiveauAction()
         #act.id = i+1
