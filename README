@@ -1,1 +1,7 @@
-Escadron-T42 is a space game for touch screen under the GPLv3 licence.
+Escadron-T42 is a space game for multi-touch screen under the GPLv3 licence.
+
+How to run ?
+------------
+
+1. Download Kivy at http://kivy.org/, and follow installation instructions
+2. Run python main.py 

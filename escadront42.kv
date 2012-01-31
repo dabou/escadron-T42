@@ -1,0 +1,611 @@
+#:kivy 1.0.9
+#:import kivy kivy
+#:import win kivy.core.window
+    
+ 
+<EcranAccueil>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/escadront42.jpg'
+            size: win.Window.size
+            pos: self.pos
+    Button:
+        text: 'Play'
+        background_color: 1,0,0,0.5
+        pos: 350, 100
+        on_release: root.next()
+        
+    Button:
+        text: 'About'
+        pos: 470, 100
+        background_color: 1,0,0,0.5
+        on_release: root.credit()
+        
+    Button:
+        text: 'Quit'
+        pos: 590, 100
+        background_color: 1,0,0,0.5
+        on_release: root.quit()
+        
+<EcranCredit>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/about.jpg'
+            size: win.Window.size
+            pos: self.pos
+    Button:
+        text: 'Back'
+        pos: 900, 50
+        background_color: 1,0,0,0.5
+        on_release: root.back()
+        
+<EcranGameOver>:	
+    tuxLbl: label_tux
+    starLbl: label_star
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/game_over.jpg'
+            size: win.Window.size
+            pos: self.pos
+    
+    Image:
+        id: image_tux
+        source: 'images/tux.png'
+        size: 48, 48
+        pos: 450, 430
+        
+    Label:
+        id: label_tux
+        text: '0'
+        font_size: 20
+        color: 1,0,0,1
+        pos: 500 , 400
+        
+    Image:
+        id: image_star
+        source: 'images/star.png'
+        size: 48, 48
+        pos: 450, 380
+        
+    Label:
+        id: label_star
+        text: '0'
+        font_size: 20
+        color: 1,0,0,1
+        pos: 500 , 350
+        
+            
+    Button:
+        text: 'Home'
+        pos: 470, 250
+        background_color: 1,0,0,0.5
+        on_release: root.next()
+        
+    
+
+<EcranNiveaux>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/eso1151a.jpg'
+            size: win.Window.size
+            pos: self.pos  
+
+    Button:
+        text: 'Home'
+        pos: 0, 0
+        on_release: root.accueil()
+          
+    Button:
+        text: 'Niv1'
+        pos: 50, 200
+        on_release: root.start('1-x33b')    
+        
+    Button:
+        text: 'Niv2'
+        pos: 250, 500
+        on_release: root.start('2-zooz')    
+        
+    Button:
+        text: 'Niv3'
+        pos: 500, 350
+        on_release: root.start('3-zardoz')  
+
+<EcranStat>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/eso1151a.jpg'
+            size: win.Window.size
+            pos: self.pos  
+
+    Button:
+        text: 'Next'
+        pos: 512, 50
+        on_release: root.next()
+        
+<EcranNiveauName>:	
+    niveauLbl: label_niveau
+    
+    Label:
+        id: label_niveau
+        text: 'Stage 0'
+        color: 1,0,0,0.5
+        font_size: 80
+        bold: True
+        pos: 500, 300
+        
+           
+    
+
+<EcranFormation>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/cadre1.png'
+            size: self.size
+            pos: self.pos
+            
+<EcranPause>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/pause.png'
+            size: win.Window.size
+            pos: self.pos  
+
+    Button:
+        text: 'Resume'
+        pos: 380, 230
+        background_color: 1,0,0,0.5
+        on_release: root.run()
+          
+    Button:
+        text: 'Exit'
+        pos: 520, 230
+        background_color: 1,0,0,0.5
+        on_release: root.quit()
+    
+    
+<SpaceBackground>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: root.source
+            size: self.size 
+            pos: self.pos    
+            
+<SpaceForeground>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        
+    
+            
+<SpaceGame>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        
+    
+    
+<SpaceScreen>:	
+    background: spaceBackground
+    foreground: spaceForeground
+    spacegame: spaceGame
+       
+    
+       
+    SpaceBackground:
+        id: spaceBackground
+        pos: root.pos
+        size: root.size
+        
+    SpaceGame:
+        id: spaceGame
+        pos: root.pos
+        size: root.size   
+           
+    SpaceForeground:
+        id: spaceForeground
+        pos: root.pos
+        size: root.size   
+   
+            
+<LaserButton>:
+    Button:
+        text: 'Fire'
+        pos: root.pos
+        background_color: 1,0,0,0.5
+        on_press: root.shoot()  
+
+<FormationButton>:
+    Button:
+        text: 'Formation'
+        pos: root.pos
+        background_color: 0,1,0,0.5
+        on_release: root.changeFormation()         
+        
+<Scan>:	
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/scanview.png'
+            size: self.size
+            pos: self.pos
+    
+<TableauScreen>:
+    shootBtn: bouton_shoot
+    formatBtn: bouton_format
+    scanview: scan_view
+    heartLbl: label_heart
+    starLbl: label_star
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'images/board.jpg'
+            size: self.size
+            pos: self.pos
+    LaserButton:
+        id: bouton_shoot
+        pos: root.width - self.width, 0  
+        
+    Scan:
+        id: scan_view
+        pos: (root.width / 2) - (self.width/2), 0
+        size: root.width / 2 , root.height*8/10
+        on_touch_up: not root.game.isOnPause and self.collide_point(*args[1].pos) and self.pause()
+        
+    FormationButton:
+        id: bouton_format
+        pos: 0, 0
+        
+    Image:
+        id: image_heart
+        source: 'images/coeur.png'
+        size: 24, 24
+        pos: 150, 80
+        
+    Label:
+        id: label_heart
+        text: '0'
+        color: 1,0,0,1
+        pos: 150 , 40
+        
+    Image:
+        id: image_star
+        source: 'images/star.png'
+        size: 24, 24
+        pos: 150, 40
+        
+    Label:
+        id: label_star
+        text: '0'
+        color: 1,0,0,1
+        pos: 150 , 5
+    
+        
+<Game>:	
+    space: spaceScreen
+    tableau: tableauScreen
+    SpaceScreen:
+        id: spaceScreen
+        size_hint: None, None
+        size: root.width, root.height * 4 / 5
+        pos: 0, root.height * 1 / 5
+        on_touch_down: not root.isOnPause and self.collide_point(*args[1].pos) and self.touch(*args[1].pos)
+        on_touch_move: not root.isOnPause and self.collide_point(*args[1].pos) and self.touch(*args[1].pos)
+        
+    TableauScreen:
+        id: tableauScreen
+        size_hint: None, None
+        size: root.width, root.height * 1 / 5
+        pos: 0, 0
+            
+    
+    
+	
+
+<SpaceShip>:
+    id: ship1
+    size_hint: None, None
+    size: 64,64
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    #imageTexture: image.texture
+    Image:
+        id: image
+        source: 'images/spaceship-drone.png'
+        #source: 'images/explosion4.png'
+        #texture: root.imageTexture
+        size: 64, 64 / self.image_ratio
+        #size: root.width , root.height 
+        #pos: -self.width / 4, -self.height / 4
+        #canvas.before:
+        #    Color:
+        #        rgb: 1, 0, 0
+        #    Rectangle:
+        #        size: root.size
+        
+        
+<Drone>:
+    id: drone1
+    size_hint: None, None
+    size: 24,24
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/spaceship-drone.png'
+        #source: root.image
+        size: root.width , root.height 
+        
+
+        
+                    
+<Asteroid>:
+    id: asteroid1
+    #on_size: self.center = win.Window.center
+    size_hint: None, None
+    size: root.size
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/asteroid2.png'
+        #size: root.size 
+        size: root.width + 10, root.height + 10
+        #canvas.before:
+        #    Color:
+        #        rgb: 0, 1, 0
+        #    Rectangle:
+        #        size: root.size
+        
+<Explose>:        
+    id: explose
+    size_hint: None, None
+    size: 64,64
+    pos: root.pos
+    #pos: root.x -(self.width / 2), root.y-(self.height / 2)
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    #imageTexture: image.texture
+    Image:
+        id: image
+        source: 'images/explosion1.png'
+        #source: 'images/explosion4.png'
+        #texture: root.imageTexture
+        size: 64, 64 / self.image_ratio
+        
+<LaserExplose>:        
+    id: laserExplose
+    size_hint: None, None
+    size: 64,64
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/explosion2.png'
+        size: 64, 64 / self.image_ratio
+        
+            
+<Laser>:
+    id: laser1
+    size_hint: None, None
+    size: 10,2
+    #pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/laser1.png'
+        size: root.size 
+    #canvas:
+    #    Color:
+    #        rgb: 0.5, 0.3, 0.7
+    #    Rectangle:
+    #        size: 10,2
+    
+<Laser2>:
+    id: laser2
+    size_hint: None, None
+    size: 20,10
+    #pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/laser2.png'
+        size: root.size 
+        
+<Laser3>:
+    id: laser3
+    size_hint: None, None
+    size: 20,10
+    #pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/laser3.png'
+        size: root.size 
+     
+               
+        
+<AsteroidDeco>:
+    id: asteroidDeco1
+    #on_size: self.center = win.Window.center
+    size_hint: None, None
+    size: root.size
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/asteroid2-deco3.png'
+        size: root.size 
+
+<ScanObject>:   
+             
+    id: scanobject
+    size_hint: None, None
+    size: root.size
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    canvas:
+        Color:
+            rgb: 1, 0, 0
+        #Rectangle:
+        #    size: root.size
+        Ellipse:
+            size: root.size
+            pos: -self.width / 4, -self.height / 4
+            
+            
+<SpaceShipVx32>:
+    id: vx32
+    size_hint: None, None
+    size: 48,48
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/spaceship-vx32.png'
+        size: root.width , root.height 
+        
+<SpaceShipVx56>:
+    id: vx56
+    size_hint: None, None
+    size: 48,48
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/spaceship-vx56.png'
+        size: root.width , root.height 
+        
+<SpaceShipT34>:
+    id: t34
+    size_hint: None, None
+    size: 48,48
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/spaceship-t34.png'
+        size: root.width , root.height 
+         
+<SpaceShipT48>:
+    id: t34
+    size_hint: None, None
+    size: 64,64
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/spaceship-t48.png'
+        size: root.width , root.height 
+        
+<ItemStar>:
+    id: itemstar
+    size_hint: None, None
+    size: 32,32
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/star.png'
+        size: root.width , root.height 
+        
+<ItemDrone>:
+    id: itemstar
+    size_hint: None, None
+    size: 32,32
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/drone.png'
+        size: root.width , root.height 
+        
+<ItemLaserUp>:
+    id: itemstar
+    size_hint: None, None
+    size: 32,32
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/sphere.png'
+        size: root.width , root.height 
+        
+<ItemHeart>:
+    id: itemstar
+    size_hint: None, None
+    size: 32,32
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/coeur.png'
+        size: root.width , root.height 
+        
+        
+<ItemTux>:
+    id: itemtux
+    size_hint: None, None
+    size: 64,64
+    pos: root.pos
+    do_rotation: False
+    do_scale: False
+    do_translation: False
+    Image:
+        id: image
+        source: 'images/tux.png'
+        size: root.width , root.height 
+            
+       
