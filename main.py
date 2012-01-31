@@ -1,5 +1,22 @@
 '''
-Escadron-T42 is a space game for touch screen under the GPLv3 licence
+   main.py is part of Escadron-T42.
+   Copyright (C) 2012 dabou
+
+   Escadron-T42 is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 3, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public
+   License along with this program; if not, see <http://www.gnu.org/licenses/> 
+   or write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301 USA.
 '''
 
 import kivy
@@ -12,22 +29,22 @@ from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.scatter import Scatter
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.properties import StringProperty
 from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty, ReferenceListProperty
-# FIXME this shouldn't be necessary
 from kivy.core.window import Window
 from kivy.core.image import Image
 from kivy.animation import Animation
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from random import random
 from kivy.clock import Clock 
 from functools import partial
 from kivy.utils import *
 from kivy.graphics import *
-#from kivy.graphics import Color, Ellipse, Line
 from kivy.vector import Vector
 
 from kivy.config import Config
@@ -44,14 +61,10 @@ from niveau import Niveau, NiveauAction, NiveauGenerated
 from textureanime import TextureAnime
 from soundlist import GestionSon
 
-#from niveaux.niveau import Niveau
-#from kivy.lang import Builder
 
-#Builder.load_file('pictures.kv')
 
 
 class Game(Widget):
-    
 
     space = ObjectProperty(None)
     tableau = ObjectProperty(None)
@@ -106,9 +119,7 @@ class Game(Widget):
         self.ecranGameOver = None
         self.ecranCredit = None
         self.ecranNiveauName = None
-        
-        
-        
+                
         self.m_oNiveau = GestionNiveau(self)
         
         self.m_oSpaceShip = SpaceShip(50,350)
@@ -124,10 +135,8 @@ class Game(Widget):
                         
     def nextNiveaux(self):
         self.pause()
-        self.loadNiveaux()
-        #self.showEcranStat()
-        
-        
+        #self.loadNiveaux()
+        self.showEcranStat()       
    
      
     def loadNiveaux(self):
@@ -157,8 +166,7 @@ class Game(Widget):
         
         del(self.m_oSpaceObjectList[:])
         del(self.m_oSpaceDecorationObjectList[:])
-            
-        
+                 
         
         #self.m_oNiveau.loadNiveau(p_sNivId)
         #self.m_oNiveau.loadFromFile('1-x33b')
@@ -169,9 +177,9 @@ class Game(Widget):
         self.m_oNiveau.setNiveau(NiveauGenerated(self.niveauNbr))
         #self.m_oNiveau.saveToFile()
         
-        self.m_oSpaceShip.pos = 50,350        
+        self.m_oSpaceShip.pos = 50,350     
+        self.m_oSpaceShip.moveTo(50, 350)
         
-        #self.m_oSpaceShip.pos = self.to_window(self.space.center_x, self.space.center_y)
         self.addSpaceObject(self.m_oSpaceShip)
         if canAddDrone1:
             self.m_oDrone1.pos = 50,350
@@ -204,22 +212,12 @@ class Game(Widget):
        
         
     def addSpaceObject(self, p_oSpaceObject):
-        #try:
-            self.m_oSpaceObjectList.append(p_oSpaceObject)
+        self.m_oSpaceObjectList.append(p_oSpaceObject)
+        self.space.spacegame.add_widget(p_oSpaceObject)
             
-            #if p_oSpaceObject.x==0 and p_oSpaceObject.y==0:
-            #    p_oSpaceObject.pos = self.space.center
-            
-            self.space.spacegame.add_widget(p_oSpaceObject)
-            
-            if p_oSpaceObject.canScanIt:
-                self.tableau.scanview.add_widget(ScanObject(p_oSpaceObject, self))
-                
-           
-                
-        #except Exception, e:
-        #    print 'err: addSpaceObject:'
-        #    Logger.exception(e)
+        if p_oSpaceObject.canScanIt:
+            self.tableau.scanview.add_widget(ScanObject(p_oSpaceObject, self))
+        
         
     def removeSpaceObject(self, p_oSpaceObject):
         self.m_oSpaceObjectList.remove(p_oSpaceObject)
@@ -243,7 +241,6 @@ class Game(Widget):
             self.space.foreground.remove_widget(p_oSpaceDecoObject)
         
     def shoot(self):
-        
         
         if self.laserType == 1:
             unLaser = Laser()
@@ -583,19 +580,14 @@ class Game(Widget):
         self.tableau.heartLbl.text = str(self.heart)
         
         if self.heart == 0:
-            self.isGameOver()
-        
-    
+            self.isGameOver()   
     
     def addStar(self, add = 1):    
         self.star += add
         self.tableau.starLbl.text = str(self.star)
     
-    
     def touchItemTux(self):    
         self.nextNiveaux()
-        
-    
           
         
     def addExplosion(self, x, y):
@@ -625,7 +617,6 @@ class Game(Widget):
             self.addSpaceObject(item)
         
     def addItemTux(self, x, y):
-        #print 'addItemTux :' + str(x) + ' ' + str(y)
         item = ItemTux()        
         item.build(x, y, self)
         self.addSpaceObject(item)
@@ -636,7 +627,6 @@ class Game(Widget):
             
     def loop(self, dt):
         
-        #try:
         self.gestionSon.loopMusic()
     
         if self.isOnPause:
@@ -661,24 +651,8 @@ class Game(Widget):
                                     oSpaceObject.collision(oOtherSpaceObject)
                 else:
                     self.removeSpaceObject(oSpaceObject)
-        
-        
                     
         self.m_oNiveau.whatHappens()
-        #except Exception, e:
-        #    print 'err: loop:'
-        #    Logger.error(e)
-            
-        #try:
-        #    try:
-        #        <suite 1>
-        #    except Ex1:
-        #        <suite 2>
-        #    <more except: clauses>
-        #    else:
-        #       <suite 3>
-        #finally:
-        #    <suite 4>
     
         
     def showEcranFormation(self): 
@@ -768,8 +742,7 @@ class Game(Widget):
     def cacherEcranNiveauName(self, dt): 
         self.remove_widget(self.ecranNiveauName)
         self.ecranNiveauName = None
-        
-        
+             
     
 
 class SpaceGame(Widget):  
@@ -781,22 +754,18 @@ class SpaceForeground(Widget):
 class SpaceBackground(Widget):    
     source = StringProperty(None)
     
-
         
 class SpaceScreen(Widget):
-    #spaceBtn = ObjectProperty(None)
     game = ObjectProperty(None)
     background = ObjectProperty(None)
     foreground = ObjectProperty(None)
     spacegame = ObjectProperty(None)
-    #source = StringProperty(None)
     
     def build(self, p_oGame):
         self.game = p_oGame
         self.background.source = 'images/eso0927a.jpg'
     
     def touch(self, x, y):
-        #print 'touchSpaceScreen'
         self.game.m_oSpaceShip.moveTo(x, y)
         
         
@@ -812,8 +781,7 @@ class TableauScreen(Widget):
     game = ObjectProperty(None)
     scanview = ObjectProperty(None)
     heartLbl = ObjectProperty(None)
-    starLbl = ObjectProperty(None)
-    
+    starLbl = ObjectProperty(None) 
     
     def build(self, p_oGame):
         self.game = p_oGame
@@ -825,11 +793,6 @@ class TableauScreen(Widget):
                
 
 class SpaceObject:
-    #m_deleteMe = False
-    #m_name = 'Inconnu'
-    #isTouched = False
-    #m_pxPerSecond = 0
-    #m_degreePerSecond = 0
     
     def __init__(self, p_oGame=None):
         self.m_pxPerSecond = 0
@@ -842,8 +805,7 @@ class SpaceObject:
         self.game = p_oGame
         self.isBack = False
         self.canScanIt = False
-        self.vie = 1
-        
+        self.vie = 1   
             
     def move(self, dt):
         pass
@@ -887,18 +849,10 @@ class ScanObject(Scatter):
         self.game = p_oGame
         p_oSpaceObject.setScanObject(self)
        
-        #testPosX =  p_oSpaceObject.x *  self.game.tableau.scanview.width / self.game.width
-        #testPosY =  p_oSpaceObject.y * self.game.tableau.scanview.height/ self.game.height 
-        
-        #scanPos = self.game.tableau.scanview.to_parent(testPosX, testPosY, relative=True)            
-        #self.pos = scanPos
-        
         self.size = 5, 5
         
         self.setPosition(p_oSpaceObject)
         
-        #self.size = p_oSpaceObject.width *  self.game.tableau.scanview.width / self.game.width, p_oSpaceObject.height * self.game.tableau.scanview.height/ self.game.height
-       
         
     def setPosition(self, p_oSpaceObject):
         testPosX =  p_oSpaceObject.x *  self.game.tableau.scanview.width / self.game.width
@@ -926,7 +880,6 @@ class Explose(Scatter,SpaceObject):
         #self.textureAnime = TextureAnime(texture=self.imageTexture,loop=False)
         
         #self.imageTexture = self.textureAnime.first()
-        #self.imageTexture = None
         
         
     def setPosition(self, x, y):
@@ -946,19 +899,13 @@ class LaserExplose(Scatter,SpaceObject):
     
     def __init__(self):
         Scatter.__init__(self)
-        SpaceObject.__init__(self)
-        
-        
+        SpaceObject.__init__(self)     
         
     def setPosition(self, x, y):
-        self.pos = x, y
-       
+        self.pos = x, y  
         
     def anime(self, dt): 
-        self.delete()
-         
-            
-     
+        self.delete()   
      
     
 class AsteroidDeco(Scatter, SpaceObject):
@@ -1000,7 +947,6 @@ class Asteroid(Scatter, SpaceObject):
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
-    #touchCount = NumericProperty(0)
     
     def __init__(self):
         Scatter.__init__(self)
@@ -1034,10 +980,8 @@ class Asteroid(Scatter, SpaceObject):
             self.delete()
             
     def setTouch(self, p_touch): 
-        self.isTouched = p_touch
-        
+        self.isTouched = p_touch    
     
-
     def collision(self, p_oOtherSpaceObject):  
     
         if not isinstance(p_oOtherSpaceObject, Asteroid) and not isinstance(p_oOtherSpaceObject, Item):
@@ -1050,10 +994,8 @@ class Asteroid(Scatter, SpaceObject):
             
             self.vie -= puissance
             
-            #print 'touche Asteroid: ' + str(self.vie)
                     
             if self.vie <= 0 :
-                #print 'delete Asteroid'
                 self.game.addExplosion(self.x, self.y)
                 self.game.gestionSon.playAsteroidExplosion()
                 self.isTouched = True
@@ -1061,14 +1003,8 @@ class Asteroid(Scatter, SpaceObject):
                 self.game.addItem(self.x, self.y)
                 
                 self.delete()
-                
-                
-        #else:
-        #    print 'Asteroid :rebond '
-        #    self.velocity_y = self.velocity_y * -1
-        #    self.m_degreePerSecond = self.m_degreePerSecond * -1
         
-    
+        
 class SpaceShip(Scatter, SpaceObject):
 
     posx = NumericProperty(0)
@@ -1077,45 +1013,23 @@ class SpaceShip(Scatter, SpaceObject):
     velocity_x = NumericProperty(500)
     velocity_y = NumericProperty(500)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
-    #image = StringProperty(None)
-    #imageTexture = ObjectProperty(None)
-    
-        
-    #self.m_pxPerSecond = 300
     
     def __init__(self, x=0, y=0):
         Scatter.__init__(self)
         SpaceObject.__init__(self)
         self.canScanIt = True
-        #self.image = 'images/explosion4.png'
         
         self.equipe = 'joueur1'
         
         self.pos = x, y
         self.posx = x
         self.posy = y
-        
-        #self.textureAnime = TextureAnime(texture=self.imageTexture,loop=False,spriteSizeX = 127, spriteSizeY = 114)
-        
-        #self.imageTexture = self.textureAnime.first()
-       
-        
-    #def anime(self, dt): 
-    #    texture = self.textureAnime.getAt()
-    #    if texture:
-    #        self.imageTexture = texture
                 
     def moveTo(self, x, y):
         self.posx = x - self.width / 2
         self.posy = y - self.height / 2
         
-    def move(self, dt): 
-        
-        #newposx = self.posx 
-        #newposy = self.posy 
-        
-        #self.pos = newposx, newposy
-               
+    def move(self, dt):        
         if self.canMove :
             
             newposx = self.x
@@ -1130,7 +1044,6 @@ class SpaceShip(Scatter, SpaceObject):
                 else:
                     newposx =  newposx + nbrpx
                 
-                
             newposy = self.y
             if self.posy <> self.y:
                 nbrpx = self.velocity_y * dt
@@ -1143,7 +1056,6 @@ class SpaceShip(Scatter, SpaceObject):
                 else:
                     newposy =  newposy + nbrpx    
                 
-                
                
             self.pos = newposx, newposy
                   
@@ -1151,19 +1063,14 @@ class SpaceShip(Scatter, SpaceObject):
         
     def getItem(self, p_oItem):
         if isinstance(p_oItem, ItemLaserUp):
-            #print 'ItemLaserUp'
             self.game.laserType += 1
         elif isinstance(p_oItem, ItemHeart):
-            #print 'ItemHeart'
             self.game.addHeart()
         elif isinstance(p_oItem, ItemDrone):
-            #print 'ItemDrone'
             self.game.addDrone()
         elif isinstance(p_oItem, ItemStar):
-            #print 'ItemStar'
             self.game.addStar()
         elif isinstance(p_oItem, ItemTux):
-            #print 'ItemTux'
             self.game.touchItemTux()
         
     def enableTouch(self, dt):
@@ -1185,7 +1092,8 @@ class SpaceShip(Scatter, SpaceObject):
     def explose(self):  
         self.game.addExplosion(self.x, self.y)
         self.game.gestionSon.playSpaceShipExplosion()
-        
+      
+      
 class Drone(Scatter, SpaceObject):
     
     velocity_x = NumericProperty(300)
@@ -1204,10 +1112,8 @@ class Drone(Scatter, SpaceObject):
         
         self.anim_x = 0
         self.anim_y = 0
-    
         
     def move(self, dt): 
-    
         posx, posy = self.oFormation.getPosition(self.droneId)
         posx += self.anim_x
         posy += self.anim_y
@@ -1247,27 +1153,18 @@ class Drone(Scatter, SpaceObject):
             
             
     def anime(self, dt): 
-    
         i = randint(0,20)
-        
         if i==1:
-            #self.anim_x = randint(-20, 20)
-            self.anim_y = randint(-20, 20)
-               
-                
-                
+            self.anim_y = randint(-20, 20)            
         
     def collision(self, p_oOtherSpaceObject):
-        #not isinstance(p_oOtherSpaceObject, Laser) and 
         if not isinstance(p_oOtherSpaceObject, SpaceShip) and not isinstance(p_oOtherSpaceObject, Drone) and not isinstance(p_oOtherSpaceObject, Item) and self.equipe != p_oOtherSpaceObject.equipe:
-            #self.isTouched = True
             self.explose()
             self.isTouched = True
             self.delete()
             
         elif isinstance(p_oOtherSpaceObject, Item):
             self.oSpaceShip.getItem(p_oOtherSpaceObject)
-        
         
     def explose(self):  
         self.game.addExplosion(self.x, self.y)
@@ -1283,8 +1180,6 @@ class SpaceShipVx32(Scatter, SpaceObject):
     velocity_x = NumericProperty(100)
     velocity_y = NumericProperty(100)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
-    
-    #self.m_pxPerSecond = 300
     
     def __init__(self, x=0, y=0):
         Scatter.__init__(self)
@@ -1316,12 +1211,9 @@ class SpaceShipVx32(Scatter, SpaceObject):
         if i==0:
             unLaser = Laser()
             unLaser.build(self, directionx=-1,directiony=0, game=self.game)
-            self.game.addSpaceObject(unLaser)
+            self.game.addSpaceObject(unLaser) 
         
-          
-        
-        if self.canMove :
-            
+        if self.canMove : 
             newposx = self.x
             if self.posx <> self.x:
                 nbrpx = self.velocity_x * dt
@@ -1333,8 +1225,7 @@ class SpaceShipVx32(Scatter, SpaceObject):
                     newposx = self.posx
                 else:
                     newposx =  newposx + nbrpx
-                
-                
+                    
             newposy = self.y
             if self.posy <> self.y:
                 nbrpx = self.velocity_y * dt
@@ -1346,13 +1237,9 @@ class SpaceShipVx32(Scatter, SpaceObject):
                     newposy = self.posy
                 else:
                     newposy =  newposy + nbrpx    
-                
-                
                
             self.pos = newposx, newposy
             self.scanObject.setPosition(self)        
-        
-        
         
     def collision(self, p_oOtherSpaceObject):
         if self.equipe != p_oOtherSpaceObject.equipe:
@@ -1364,20 +1251,16 @@ class SpaceShipVx32(Scatter, SpaceObject):
                 puissance = self.vie
             
             self.vie -= puissance
-            
-            #print 'touche VX32: ' + str(self.vie)
                     
             if self.vie <= 0 :
-                #print 'delete VX32'
                 self.explose()
                 self.isTouched = True
                 self.delete()
-            
-        
         
     def explose(self):  
         self.game.addExplosion(self.x, self.y)
         self.game.gestionSon.playSpaceShipExplosion()
+        
         
 class SpaceShipVx56(SpaceShipVx32):
     def __init__(self):
@@ -1400,7 +1283,6 @@ class SpaceShipVx56(SpaceShipVx32):
             unLaser.build(self, directionx=-1,directiony=0, game=self.game)
             self.game.addSpaceObject(unLaser)
         
-        
         if self.canMove :
             
             newposx = self.x
@@ -1415,7 +1297,6 @@ class SpaceShipVx56(SpaceShipVx32):
                 else:
                     newposx =  newposx + nbrpx
                 
-                
             newposy = self.y
             if self.posy <> self.y:
                 nbrpx = self.velocity_y * dt
@@ -1427,11 +1308,10 @@ class SpaceShipVx56(SpaceShipVx32):
                     newposy = self.posy
                 else:
                     newposy =  newposy + nbrpx    
-                
-                
                
             self.pos = newposx, newposy
             self.scanObject.setPosition(self) 
+            
         
 class SpaceShipT34(SpaceShipVx32):
     def __init__(self):
@@ -1455,7 +1335,6 @@ class SpaceShipT34(SpaceShipVx32):
             unLaser.build(self, directionx=-1,directiony=0, game=self.game)
             self.game.addSpaceObject(unLaser)
         
-        
         if self.canMove :
             
             newposx = self.x
@@ -1470,7 +1349,6 @@ class SpaceShipT34(SpaceShipVx32):
                 else:
                     newposx =  newposx + nbrpx
                 
-                
             newposy = self.y
             if self.posy <> self.y:
                 nbrpx = self.velocity_y * dt
@@ -1482,11 +1360,10 @@ class SpaceShipT34(SpaceShipVx32):
                     newposy = self.posy
                 else:
                     newposy =  newposy + nbrpx    
-                
-                
                
             self.pos = newposx, newposy
-            self.scanObject.setPosition(self)       
+            self.scanObject.setPosition(self)   
+            
         
 class SpaceShipT48(SpaceShipVx32):
     def __init__(self):
@@ -1510,7 +1387,6 @@ class SpaceShipT48(SpaceShipVx32):
             unLaser.build(self, directionx=-1,directiony=0, game=self.game)
             self.game.addSpaceObject(unLaser)
         
-        
         if self.canMove :
             
             newposx = self.x
@@ -1525,7 +1401,6 @@ class SpaceShipT48(SpaceShipVx32):
                 else:
                     newposx =  newposx + nbrpx
                 
-                
             newposy = self.y
             if self.posy <> self.y:
                 nbrpx = self.velocity_y * dt
@@ -1537,9 +1412,7 @@ class SpaceShipT48(SpaceShipVx32):
                     newposy = self.posy
                 else:
                     newposy =  newposy + nbrpx    
-                
-                
-               
+              
             self.pos = newposx, newposy
             self.scanObject.setPosition(self)
         
@@ -1576,7 +1449,6 @@ class Item(Scatter, SpaceObject):
             self.isTouched = True
             self.game.gestionSon.playGetItem()
             
-            
         if not isinstance(p_oOtherSpaceObject, Asteroid) and not isinstance(p_oOtherSpaceObject, Laser):
             self.delete()
             
@@ -1610,18 +1482,9 @@ class ItemTux(Item):
                         
     def collision(self, p_oOtherSpaceObject):
         pass
-        #if isinstance(p_oOtherSpaceObject, SpaceShip):
-        #    self.isTouched = True
-        #    self.game.gestionSon.playGetItem()
             
-            
-    
-            
-        
-        
    
 class Laser(Scatter, SpaceObject):
-    
         
     def __init__(self):
         Scatter.__init__(self)
@@ -1635,7 +1498,6 @@ class Laser(Scatter, SpaceObject):
         self.equipe = oSniperSpaceObject.equipe
         self.oSniperSpaceObject = oSniperSpaceObject
         self.game = game
-        
         
         self.direction = directionx, directiony
         
@@ -1711,7 +1573,6 @@ class FormationButton(Widget):
     
 class Formation():
 
-    
     def __init__(self, p_oSpaceObjectReference):
         self.formationId = 4
         self.oSpaceObjectReference = p_oSpaceObjectReference
@@ -1721,7 +1582,7 @@ class Formation():
             self.formationId = p_nFormationId
         else:
             self.formationId = (self.formationId %4) + 1
-            #print str(self.formationId)
+           
             
     
     def changeFormationTo(self, p_sFormation):        
@@ -1789,8 +1650,6 @@ class Formation():
             posy = self.oSpaceObjectReference.y - 10 
           
         return posx, posy 
-        
-    
     
     def getPosition(self, p_oSpaceObjectId):  
         newPosition = 0,0
@@ -1806,9 +1665,9 @@ class Formation():
             
         elif self.formationId == 4:
             newPosition = self.formation4(p_oSpaceObjectId)
-        
             
         return newPosition
+        
         
 class EcranFormation(Widget):
     game = ObjectProperty(None)
@@ -1817,14 +1676,11 @@ class EcranFormation(Widget):
         self.game = p_oGame
         self.gdb = GestureDatabase()
 
-        # add pre-recorded gestures to database
         self.gdb.add_gesture(ligne)
         self.gdb.add_gesture(lance)
         self.gdb.add_gesture(vertical)
      
     def on_touch_down(self, touch):
-        # start collecting points in touch.ud
-        # create a line to display the points
         userdata = touch.ud
         with self.canvas:
             Color(0.5, 1, 1)
@@ -1853,28 +1709,15 @@ class EcranFormation(Widget):
             pass
  
      
-    #def touch(self, x, y):
     def on_touch_up(self, touch):
-               
-        # touch is over, display informations, and check if it matches some
-        # known gesture.
         
         g = self.simplegesture(
                 '',
                 zip(touch.ud['line'].points[::2], touch.ud['line'].points[1::2])
                 )
-        # print the gesture representation, you can use that to add
-        # gestures to my_gestures.py
-        #print "gesture representation:", self.gdb.gesture_to_str(g)
         
         #Logger.info("gesture representation: "+ self.gdb.gesture_to_str(g))
 
-        # print match scores between all known gestures
-        #print "ligne:", g.get_score(ligne)
-        #print "lance:", g.get_score(lance)
-        #print "vertical:", g.get_score(vertical)
-       
-        # use database to find the more alike gesture, if any
         g2 = self.gdb.find(g, minscore=0.85)
 
         formation = "None"
@@ -1884,16 +1727,14 @@ class EcranFormation(Widget):
             elif g2[1] == lance: formation = "lance"
             elif g2[1] == vertical: formation = "vertical"
                 
-               
-        self.add_widget(Label(text=formation, center_x= self.game.width / 2, center_y= self.game.height / 2))
+        if formation <> "None":     
+            self.add_widget(Label(text='ok', center_x= self.game.width / 2, center_y= self.game.height / 2))
         
         self.changeFormation(formation)
         
         Clock.schedule_once(self.game.cacherEcranFormation, 1)
         
     def calculate_points(self, x1, y1, x2, y2, steps=5):
-        #print 'x1:' + str(x1) + ' y1:' + str(y1)
-        #print 'x2:' + str(x2) + ' y2:' + str(y2)
         dx = x2 - x1
         dy = y2 - y1
         dist = sqrt(dx * dx + dy * dy)
@@ -1977,7 +1818,6 @@ class GestionNiveau:
             if newAct in self.niveau.actions:
                 act = self.niveau.actions[newAct]
                 if act.time < self.niveauTime:
-                    #print 'whatHappens: ' +act.object
                     
                     if act.type == 'create':
                     
@@ -2058,8 +1898,7 @@ class EcranStat(Widget):
     
     def build(self, p_oGame):
         self.game = p_oGame
-        
-     
+       
     def next(self):
         self.game.cacherEcranStat(None) 
         self.game.loadNiveaux()
@@ -2093,21 +1932,31 @@ class EcranCredit(Widget):
         chdir(os.path.dirname( __file__))
         
         f=open("credits",'r')
-        #c=Label(text=f.read(), text_size=(self.width-20, None),size_hint=(1,.9),shorten=True)
-        c=Label(text=f.read(),size_hint=(1,.9),shorten=True)
-        f.close()
         
         chdir(currentPathTmp)
         
-        #self = BoxLayout(orientation='vertical')
-        self.add_widget(c)
+        layout = GridLayout(cols=1, spacing=5, size_hint_y=None)
+        layout.bind(minimum_height=layout.setter('height'))
         
+        while 1:
+            txt = f.readline().rstrip('\n\r')
+            
+            if txt =='':
+                break
+             
+            c=Label(text=txt,color=( 1,0,0,1), size_hint_y=None, height=40)    
+            layout.add_widget(c)
         
+        scroll = ScrollView(size_hint=(None, None), size=(800, 400), pos=(100,50))
+        scroll.add_widget(layout)
+        
+        self.add_widget(scroll)
+        
+        f.close()
      
     def back(self):
         self.game.cacherEcranCredit(None)
         self.game.showEcranAccueil()
-        
         
         
 class EcranPause(Widget):
@@ -2133,8 +1982,7 @@ class EcranNiveauName(Widget):
         self.game = p_oGame
         self.niveauLbl.text = 'Niveau ' + str(self.game.niveauNbr)
         Clock.schedule_once(self.game.cacherEcranNiveauName, 2)
-    
-        
+     
 
 Factory.register("SpaceBackground", SpaceBackground)
 Factory.register("SpaceForeground", SpaceForeground)
@@ -2146,48 +1994,29 @@ Factory.register("LaserButton", LaserButton)
 Factory.register("FormationButton", FormationButton)   
 Factory.register("Scan", Scan) 
 
-
         
 class EscadronT42App(App):
     title = 'Escadron T-42'
     icon = 'escadront42.png'
     
-     
     def build_config(self, config):
         Config.set('graphics', 'show_cursor', 1)
         Config.set('graphics', 'fullscreen', '0')
         Config.set('graphics', 'width', 1024)
         Config.set('graphics', 'height', 600)
         Config.write()
-    #    config.setdefaults('section1', {
-    #        'key1': 'value1',
-    #        'key2': '42'
-    #    })
-        
+    
     def build(self):
-        #kivy.resources.resource_add_path(os.path.dirname( __file__)+ '/images')
-        
-              
         self.game = Game()  
         self.game.build(self)
         
-        
         self.game.showEcranAccueil()
-        #self.game.showEcranNiveaux()
-       
-        #self.game.loadNiveaux()
-        #self.game.run()
-        
-        #config.get('section1', 'key1'),
-        #config.getint('section1', 'key2')
-        
+                
         return self.game
         
     def quitGame(self): 
-        #kivy.resources.resource_remove_path(os.path.dirname( __file__)+ '/images')
         self.stop()
     
-        
         
 
 if __name__ in ('__main__', '__android__'):

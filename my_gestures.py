@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from kivy.gesture import GestureDatabase
 
-#TODO dans un sens et dans l'autre sens
 gdb = GestureDatabase()
 
 vertical = \

@@ -126,10 +126,20 @@
             source: 'images/eso1151a.jpg'
             size: win.Window.size
             pos: self.pos  
+            
+    Label:
+        id: label_niveau
+        text: 'Thank you for help Tux!'
+        color: 0,1,0,0.75
+        font_size: 50
+        bold: True
+        pos: 500, 300        
+    
 
     Button:
         text: 'Next'
         pos: 512, 50
+        background_color: 1,0,0,0.5
         on_release: root.next()
         
 <EcranNiveauName>:	
@@ -151,7 +161,7 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'images/cadre1.png'
+            source: 'images/gesture.png'
             size: self.size
             pos: self.pos
             

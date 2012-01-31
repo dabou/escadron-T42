@@ -2,7 +2,6 @@ Author
 ---------------------
  * Dabou
  
- 
 Include or derivative work
 ---------------------
 Graphic:
@@ -33,16 +32,17 @@ Sound:
  * Arstic licence - Lionel Allorge - laser1.wav
  * Arstic licence - Lionel Allorge - laser2.wav
  * Arstic licence - Lionel Allorge - laser3.wav
- * CC BY 3.0 - noisecollector - boom4.wav *
- * CC BY 3.0 - junggle - btn107.wav *
- * CC BY 3.0 - hardpcm - chip116.wav *
- * Sampling Plus 1.0 - smokum - boom1.wav *
- * Sampling Plus 1.0 - aust-paul - possiblelazer.wav *
- * Sampling Plus 1.0 - ejfortin - energy-whip-2.wav *
-
-
+ * CC BY 3.0 - noisecollector - boom4.wav
+ * CC BY 3.0 - junggle - btn107.wav
+ * CC BY 3.0 - hardpcm - chip116.wav
+ * Sampling Plus 1.0 - smokum - boom1.wav
+ * Sampling Plus 1.0 - aust-paul - possiblelazer.wav
+ * Sampling Plus 1.0 - ejfortin - energy-whip-2.wav
+ 
+ 
 Music:
  * CC BY-NC-SA 3.0 - THE NABIS PROJECT-Adam CASTILLO -  All music
-
+ 
 Framework:
  * LGPL - Kivy
+ 

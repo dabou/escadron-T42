@@ -1,3 +1,24 @@
+'''
+   niveau.py is part of Escadron-T42.
+   Copyright (C) 2012 dabou
+
+   Escadron-T42 is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 3, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public
+   License along with this program; if not, see <http://www.gnu.org/licenses/> 
+   or write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301 USA.
+'''
+
 from random import randint
 from math import log, trunc
 from kivy.core.window import Window
@@ -165,8 +186,8 @@ class NiveauGenerated(Niveau):
                 
         whatmin = trunc(0 + time/4 * self.difficulty )      
         whatmax = trunc(200*log(10*self.difficulty) - 50)
-        print 'whatmin =' + str(whatmin)
-        print 'whatmax =' + str(whatmax)
+        #print 'whatmin =' + str(whatmin)
+        #print 'whatmax =' + str(whatmax)
         
         for i in range(10):
                         
@@ -184,7 +205,7 @@ class NiveauGenerated(Niveau):
             whatmax = trunc(200*log(10*self.difficulty) - 50)
             
             whatDifficult = randint(whatmin, whatmax)
-            print 'whatDifficult (' + str(whatmin) +','+ str(whatmax)+'):' + str(whatDifficult)
+            #print 'whatDifficult (' + str(whatmin) +','+ str(whatmax)+'):' + str(whatDifficult)
             
             if whatDifficult <= 400:
                 act.isDeco = False
