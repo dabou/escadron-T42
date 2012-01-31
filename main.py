@@ -603,13 +603,13 @@ class Game(Widget):
     def addItem(self, x, y):
         item = None
         i = randint(0, 100)
-        if i <= 8 :
+        if i <= 5 :
             item = ItemLaserUp()
-        elif i > 8 and i <= 20:
+        elif i > 5 and i <= 10:
             item = ItemHeart()
-        elif i > 20 and i <= 30:
+        elif i > 10 and i <= 20:
             item = ItemDrone()
-        elif i > 30 and i <= 50:
+        elif i > 20 and i <= 40:
             item = ItemStar()        
           
         if item:
@@ -1574,7 +1574,7 @@ class FormationButton(Widget):
 class Formation():
 
     def __init__(self, p_oSpaceObjectReference):
-        self.formationId = 4
+        self.formationId = 3
         self.oSpaceObjectReference = p_oSpaceObjectReference
         
     def changeFormation(self, p_nFormationId=0):
@@ -1727,8 +1727,8 @@ class EcranFormation(Widget):
             elif g2[1] == lance: formation = "lance"
             elif g2[1] == vertical: formation = "vertical"
                 
-        if formation <> "None":     
-            self.add_widget(Label(text='ok', center_x= self.game.width / 2, center_y= self.game.height / 2))
+        #if formation <> "None":     
+        #    self.add_widget(Label(text='ok', center_x= self.game.width / 2, center_y= self.game.height / 2))
         
         self.changeFormation(formation)
         

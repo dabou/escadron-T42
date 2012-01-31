@@ -181,7 +181,7 @@ class NiveauGenerated(Niveau):
         whatmin = trunc(0 + time/4 * self.difficulty )      
         whatmax = trunc(200*log(10*self.difficulty) - 50)
         
-        for i in range(500):
+        for i in range(70 + (10 * self.difficulty)):
                         
             index += 1
             
@@ -232,7 +232,7 @@ class NiveauGenerated(Niveau):
             self.actions[index] = act
             
             deco = randint(0, 10)
-            if deco < 8 :
+            if deco < 3 :
                 index += 1
                 
                 act.id = index
@@ -250,8 +250,10 @@ class NiveauGenerated(Niveau):
                 self.actions[index] = act
             
             #time += randint(50, 100) /100
-            time += randint(1, 20) /10
+            time += randint(1, 3) /10.0
             
+         
+               
         act = NiveauAction()
         act.id = index + 1
         act.time = time
