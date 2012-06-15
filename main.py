@@ -61,6 +61,8 @@ from niveau import Niveau, NiveauAction, NiveauGenerated
 from textureanime import TextureAnime
 from soundlist import GestionSon
 
+import time
+
 
 
 
@@ -107,6 +109,20 @@ class Game(Widget):
         
         self.m_oSpaceObjectList = []
         self.m_oSpaceDecorationObjectList = []
+        
+                
+        self.m_oRegion1_1ObjectList = []
+        self.m_oRegion1_2ObjectList = []
+        self.m_oRegion1_3ObjectList = []
+        self.m_oRegion1_4ObjectList = []
+        self.m_oRegion2_1ObjectList = []
+        self.m_oRegion2_2ObjectList = []
+        self.m_oRegion2_3ObjectList = []
+        self.m_oRegion2_4ObjectList = []
+        self.m_oRegion3_1ObjectList = []
+        self.m_oRegion3_2ObjectList = []
+        self.m_oRegion3_3ObjectList = []
+        self.m_oRegion3_4ObjectList = []
                       
         self.space.build(self)
         
@@ -207,7 +223,9 @@ class Game(Widget):
     def run(self):
         self.isOnPause = False
         self.gestionSon.playMusic()
-        Clock.schedule_interval(self.loop, 0.01)
+        self.spaceDecorationObjectListIndex = 0
+        #self.spaceObjectListIndex = 0
+        Clock.schedule_interval(self.loop, 0.02)
         
        
         
@@ -631,30 +649,324 @@ class Game(Widget):
     
         if self.isOnPause:
             return False
+            
         
-        for oSpaceDecoObject in self.m_oSpaceDecorationObjectList:
+        tps1 = time.clock()
+        
+               
+               
+        if self.spaceDecorationObjectListIndex >= len(self.m_oSpaceDecorationObjectList):
+            self.spaceDecorationObjectListIndex = 0        
+            
+        while self.spaceDecorationObjectListIndex < len(self.m_oSpaceDecorationObjectList):
+            oSpaceDecoObject = self.m_oSpaceDecorationObjectList[self.spaceDecorationObjectListIndex]
             if isinstance(oSpaceDecoObject, SpaceObject):
                 if not oSpaceDecoObject.isDeleted():
                     oSpaceDecoObject.move(dt)
                     oSpaceDecoObject.anime(dt)
                 else:
                     self.removeSpaceDecorationObject(oSpaceDecoObject)
-    
+            self.spaceDecorationObjectListIndex += 1                           
+            if time.clock() - tps1 > 0.01:
+                break;
+        
+        #for i in range(len(self.m_oSpaceDecorationObjectList)):
+            
+        # Decoupage en region pour 150 objets:
+        # 1 region :  150*150 => 22500 cycles de collision
+        # 4 regions : 50*50 + 30*30 + 20*20 + 50*50 => 6300 cycles => bien mieux
+        # 6 regions : 25*25 + 30*30 +20*20 +10*10 +25*25 + 40*40 => 4250 cycles
+        
+                
+        del(self.m_oRegion1_1ObjectList[:])
+        del(self.m_oRegion1_2ObjectList[:])
+        del(self.m_oRegion1_3ObjectList[:])
+        del(self.m_oRegion1_4ObjectList[:])
+        del(self.m_oRegion2_1ObjectList[:])
+        del(self.m_oRegion2_2ObjectList[:])
+        del(self.m_oRegion2_3ObjectList[:])
+        del(self.m_oRegion2_4ObjectList[:])
+        del(self.m_oRegion3_1ObjectList[:])
+        del(self.m_oRegion3_2ObjectList[:])
+        del(self.m_oRegion3_3ObjectList[:])
+        del(self.m_oRegion3_4ObjectList[:])
+        
+        oRegionLimitVertical1 = self.space.size[0]/4
+        oRegionLimitVertical2 = self.space.size[0]/2
+        oRegionLimitVertical3 = self.space.size[0]*3/4
+        
+        oRegionLimitHorizontal1 = self.space.size[1]/3
+        oRegionLimitHorizontal2 = self.space.size[1]*2/3
+        
+       
+        
         for oSpaceObject in self.m_oSpaceObjectList:
+             if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    #Logger.info("Pos: "+ str())
+                    
+                    #Region 1-1
+                    if oSpaceObject.pos[0] <= oRegionLimitVertical1 and oSpaceObject.pos[1] <= oRegionLimitHorizontal1:
+                        self.m_oRegion1_1ObjectList.append(oSpaceObject)                        
+                    #Region 2-1
+                    elif oSpaceObject.pos[0] <= oRegionLimitVertical1 and oSpaceObject.pos[1] > oRegionLimitHorizontal1 and oSpaceObject.pos[1] <= oRegionLimitHorizontal2:
+                         self.m_oRegion2_1ObjectList.append(oSpaceObject)
+                    #Region 3-1
+                    elif oSpaceObject.pos[0] <= oRegionLimitVertical1 and oSpaceObject.pos[1] > oRegionLimitHorizontal2:
+                         self.m_oRegion3_1ObjectList.append(oSpaceObject)
+                         
+                    #Region 1-2
+                    if oSpaceObject.pos[0] > oRegionLimitVertical1 and oSpaceObject.pos[0] <= oRegionLimitVertical2 and oSpaceObject.pos[1] <= oRegionLimitHorizontal1:
+                        self.m_oRegion1_2ObjectList.append(oSpaceObject)                        
+                    #Region 2-2
+                    elif oSpaceObject.pos[0] > oRegionLimitVertical1 and oSpaceObject.pos[0] <= oRegionLimitVertical2 and oSpaceObject.pos[1] > oRegionLimitHorizontal1 and oSpaceObject.pos[1] <= oRegionLimitHorizontal2:
+                         self.m_oRegion2_2ObjectList.append(oSpaceObject)
+                    #Region 3-2
+                    elif oSpaceObject.pos[0] > oRegionLimitVertical1 and oSpaceObject.pos[0] <= oRegionLimitVertical2 and oSpaceObject.pos[1] > oRegionLimitHorizontal2:
+                         self.m_oRegion3_2ObjectList.append(oSpaceObject)
+                         
+                    #Region 1-3
+                    if oSpaceObject.pos[0] > oRegionLimitVertical2 and oSpaceObject.pos[0] <= oRegionLimitVertical3 and oSpaceObject.pos[1] <= oRegionLimitHorizontal1:
+                        self.m_oRegion1_3ObjectList.append(oSpaceObject)                        
+                    #Region 2-3
+                    elif oSpaceObject.pos[0] > oRegionLimitVertical2 and oSpaceObject.pos[0] <= oRegionLimitVertical3 and oSpaceObject.pos[1] > oRegionLimitHorizontal1 and oSpaceObject.pos[1] <= oRegionLimitHorizontal2:
+                         self.m_oRegion2_3ObjectList.append(oSpaceObject)
+                    #Region 3-3
+                    elif oSpaceObject.pos[0] > oRegionLimitVertical2 and oSpaceObject.pos[0] <= oRegionLimitVertical3 and oSpaceObject.pos[1] > oRegionLimitHorizontal2:
+                         self.m_oRegion3_3ObjectList.append(oSpaceObject)
+                         
+                    #Region 1-4
+                    if oSpaceObject.pos[0] > oRegionLimitVertical3 and oSpaceObject.pos[1] <= oRegionLimitHorizontal1:
+                        self.m_oRegion1_4ObjectList.append(oSpaceObject)                        
+                    #Region 2-4
+                    elif oSpaceObject.pos[0] > oRegionLimitVertical3 and oSpaceObject.pos[1] > oRegionLimitHorizontal1 and oSpaceObject.pos[1] <= oRegionLimitHorizontal2:
+                         self.m_oRegion2_4ObjectList.append(oSpaceObject)
+                    #Region 3-4
+                    elif oSpaceObject.pos[0] > oRegionLimitVertical3 and oSpaceObject.pos[1] > oRegionLimitHorizontal2:
+                         self.m_oRegion3_4ObjectList.append(oSpaceObject)
+                else:
+                    self.removeSpaceObject(oSpaceObject)
+        
+        # boucle pour region 1-1
+        i=0
+        while i < len(self.m_oRegion1_1ObjectList):
+            oSpaceObject = self.m_oRegion1_1ObjectList[i]
             if isinstance(oSpaceObject, SpaceObject):
                 if not oSpaceObject.isDeleted():
                     oSpaceObject.move(dt)
                     oSpaceObject.anime(dt)
                     if oSpaceObject.canCollision():
-                        for oOtherSpaceObject in self.m_oSpaceObjectList:
-                            if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
-                                    oSpaceObject.collision(oOtherSpaceObject)
-                else:
-                    self.removeSpaceObject(oSpaceObject)
-                    
+                       for oOtherSpaceObject in self.m_oRegion1_1ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion1_1ObjectList)))
+            #    break;
+        
+        # boucle pour region 2-1
+        i=0
+        while i < len(self.m_oRegion2_1ObjectList):
+            oSpaceObject = self.m_oRegion2_1ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion2_1ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion2_1ObjectList)))
+            #    break;
+            
+        
+        # boucle pour region 3-1
+        i=0
+        while i < len(self.m_oRegion3_1ObjectList):
+            oSpaceObject = self.m_oRegion3_1ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion3_1ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion3_1ObjectList)))
+            #    break;
+            
+        
+        # boucle pour region 1-2
+        i=0
+        while i < len(self.m_oRegion1_2ObjectList):
+            oSpaceObject = self.m_oRegion1_2ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion1_2ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion1_2ObjectList)))
+            #    break;
+            
+        
+        # boucle pour region 2-2
+        i=0
+        while i < len(self.m_oRegion2_2ObjectList):
+            oSpaceObject = self.m_oRegion2_2ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion2_2ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion2_2ObjectList)))
+            #    break;
+            
+        
+        # boucle pour region 3-2
+        i=0
+        while i < len(self.m_oRegion3_2ObjectList):
+            oSpaceObject = self.m_oRegion3_2ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion3_2ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion3_2ObjectList)))
+            #    break;
+            
+        
+        # boucle pour region 1-3
+        i=0
+        while i < len(self.m_oRegion1_3ObjectList):
+            oSpaceObject = self.m_oRegion1_3ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion1_3ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion1_3ObjectList)))
+            #    break;
+            
+        
+        # boucle pour region 2-3
+        i=0
+        while i < len(self.m_oRegion2_3ObjectList):
+            oSpaceObject = self.m_oRegion2_3ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion2_3ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion2_3ObjectList)))
+            #    break;
+            
+        
+        # boucle pour region 3-3
+        i=0
+        while i < len(self.m_oRegion3_3ObjectList):
+            oSpaceObject = self.m_oRegion3_3ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion3_3ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion3_3ObjectList)))
+            #    break;
+            
+        
+        # boucle pour region 1-4
+        i=0
+        while i < len(self.m_oRegion1_4ObjectList):
+            oSpaceObject = self.m_oRegion1_4ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion1_4ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion1_4ObjectList)))
+            #    break;
+         
+        # boucle pour region 2-4
+        i=0
+        while i < len(self.m_oRegion2_4ObjectList):
+            oSpaceObject = self.m_oRegion2_4ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion2_4ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion2_4ObjectList)))
+            #    break;
+         
+        # boucle pour region 3-4
+        i=0
+        while i < len(self.m_oRegion3_4ObjectList):
+            oSpaceObject = self.m_oRegion3_4ObjectList[i]
+            if isinstance(oSpaceObject, SpaceObject):
+                if not oSpaceObject.isDeleted():
+                    oSpaceObject.move(dt)
+                    oSpaceObject.anime(dt)
+                    if oSpaceObject.canCollision():
+                       for oOtherSpaceObject in self.m_oRegion3_4ObjectList:
+                           if oOtherSpaceObject != oSpaceObject and oOtherSpaceObject.canCollision() and oSpaceObject.collide_widget(oOtherSpaceObject) :
+                                   oSpaceObject.collision(oOtherSpaceObject) 
+            i += 1 
+            #if time.clock() - tps1 > 0.01:
+            #    Logger.info("SO: "+str(i)+" | len: "+str(len(self.m_oRegion3_4ObjectList)))
+            #    break;
+               
+        
+                
+        # Logger.info("object: "+str(len(self.m_oSpaceObjectList))+" | tps: "+str(time.clock() - tps1))
+        # Logger.info("########### THE END  ###########")
+              
         self.m_oNiveau.whatHappens()
     
-        
+    
     def showEcranFormation(self): 
         self.pause()
         self.ecranFormation = EcranFormation()
@@ -2004,6 +2316,10 @@ class EscadronT42App(App):
         Config.set('graphics', 'fullscreen', '0')
         Config.set('graphics', 'width', 1024)
         Config.set('graphics', 'height', 600)
+        # Config.set('graphics', 'show_cursor', 0)
+        # Config.set('graphics', 'fullscreen', '1')
+        # Config.set('graphics', 'width', 1920)
+        # Config.set('graphics', 'height', 1080)
         Config.write()
     
     def build(self):
